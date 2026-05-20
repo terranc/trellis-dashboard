@@ -39,5 +39,9 @@ npm-debug.log*
 .codex/
 .opencode/
 
-# Trellis — keep config, scripts, spec, tasks; ignore personal/runtime
+# Trellis — keep config, scripts, spec; ignore tasks/workspace/runtime
+.trellis/tasks/
 .trellis/workspace/
+
+# Doc update bookmark
+.doc_hash
