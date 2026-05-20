@@ -2,7 +2,7 @@ import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { listTasks, readTaskDetail } from "../lib/tasks.js";
+import { listTasks, readCurrentTask, readTaskDetail } from "../lib/tasks.js";
 import { resolveTrellisProject } from "../lib/trellis.js";
 
 describe("task helpers", () => {
@@ -70,6 +70,36 @@ describe("task helpers", () => {
         },
       ],
     );
+  });
+
+  it("reads the task used by Trellis continue", () => {
+    const root = createProject();
+    const taskDir = path.join(root, ".trellis", "tasks", "03-current");
+    const sessionDir = path.join(root, ".trellis", ".runtime", "sessions");
+    mkdirSync(taskDir, { recursive: true });
+    mkdirSync(sessionDir, { recursive: true });
+    writeFileSync(
+      path.join(taskDir, "task.json"),
+      JSON.stringify({ title: "Current task", status: "in_progress" }),
+    );
+    writeFileSync(
+      path.join(sessionDir, "codex.json"),
+      JSON.stringify({ current_task: ".trellis/tasks/03-current" }),
+    );
+
+    expect(readCurrentTask(resolveTrellisProject(root))?.id).toBe("03-current");
+  });
+
+  it("does not guess a continue task from multiple active tasks", () => {
+    const root = createProject();
+    const taskDir = path.join(root, ".trellis", "tasks", "04-active");
+    mkdirSync(taskDir, { recursive: true });
+    writeFileSync(
+      path.join(taskDir, "task.json"),
+      JSON.stringify({ title: "Active task", status: "in_progress" }),
+    );
+
+    expect(readCurrentTask(resolveTrellisProject(root))).toBeNull();
   });
 });
 

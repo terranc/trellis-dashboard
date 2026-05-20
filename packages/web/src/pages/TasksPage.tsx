@@ -1,17 +1,28 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { text } from "../i18n/en";
 import type { TaskDetail, TaskDoc, TaskSummary } from "../lib/api";
 import { fetchTaskDetail, fetchTasks } from "../lib/api";
+import type { NavigateOptions } from "../lib/route";
 
 const STATUS_ORDER = ["in_progress", "planning", "review", "completed"];
 
-export function TasksPage() {
+interface TasksPageProps {
+  projectRoot: string | undefined;
+  selectedTaskId: string | undefined;
+  onSelectTask: (taskId: string | undefined, options?: NavigateOptions) => void;
+}
+
+export function TasksPage({
+  projectRoot,
+  selectedTaskId,
+  onSelectTask,
+}: TasksPageProps) {
   const [tasks, setTasks] = useState<TaskSummary[]>([]);
-  const [selectedTask, setSelectedTask] = useState<TaskSummary>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
+  const [copiedTaskId, setCopiedTaskId] = useState<string>();
 
   useEffect(() => {
     fetchTasks()
@@ -20,6 +31,21 @@ export function TasksPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const selectedTask = useMemo(
+    () => tasks.find((task) => task.id === selectedTaskId),
+    [selectedTaskId, tasks],
+  );
+
+  useEffect(() => {
+    if (loading || !selectedTaskId) {
+      return;
+    }
+
+    if (!tasks.some((task) => task.id === selectedTaskId)) {
+      onSelectTask(undefined, { replace: true });
+    }
+  }, [loading, onSelectTask, selectedTaskId, tasks]);
+
   useEffect(() => {
     if (!selectedTask) {
       return;
@@ -27,15 +53,36 @@ export function TasksPage() {
 
     function closeOnEscape(event: KeyboardEvent): void {
       if (event.key === "Escape") {
-        setSelectedTask(undefined);
+        onSelectTask(undefined);
       }
     }
 
     document.addEventListener("keydown", closeOnEscape);
     return () => document.removeEventListener("keydown", closeOnEscape);
-  }, [selectedTask]);
+  }, [onSelectTask, selectedTask]);
 
   const groupedTasks = useMemo(() => groupTasks(tasks), [tasks]);
+  const copyTaskHandoff = useCallback(
+    (task: TaskSummary) => {
+      void navigator.clipboard
+        .writeText(buildTaskHandoffPrompt(task, projectRoot))
+        .then(() => {
+          setCopiedTaskId(task.id);
+          setError(undefined);
+        })
+        .catch(() => setError(text.copyTaskHandoffFailed));
+    },
+    [projectRoot],
+  );
+
+  useEffect(() => {
+    if (!copiedTaskId) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => setCopiedTaskId(undefined), 1800);
+    return () => window.clearTimeout(timeout);
+  }, [copiedTaskId]);
 
   return (
     <main className="tasks-layout">
@@ -71,11 +118,11 @@ export function TasksPage() {
                     key={task.path}
                     role="button"
                     tabIndex={0}
-                    onClick={() => setSelectedTask(task)}
+                    onClick={() => onSelectTask(task.id)}
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
                         event.preventDefault();
-                        setSelectedTask(task);
+                        onSelectTask(task.id);
                       }
                     }}
                   >
@@ -83,6 +130,23 @@ export function TasksPage() {
                       <span>{task.priority ?? statusLabel("unknown")}</span>
                       <small>{task.id}</small>
                     </div>
+                    {canCopyTaskHandoff(task) ? (
+                      <button
+                        aria-label={`${text.copyTaskHandoff}: ${task.title}`}
+                        aria-pressed={copiedTaskId === task.id}
+                        className="task-copy-button task-card__copy"
+                        type="button"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          copyTaskHandoff(task);
+                        }}
+                        onKeyDown={(event) => event.stopPropagation()}
+                      >
+                        {copiedTaskId === task.id
+                          ? text.copiedTaskHandoff
+                          : text.copyTaskHandoffShort}
+                      </button>
+                    ) : null}
                     <h4>{task.title}</h4>
                     {task.description ? <p>{task.description}</p> : null}
                     <dl>
@@ -116,8 +180,10 @@ export function TasksPage() {
       </section>
       {selectedTask ? (
         <TaskDetailsModal
+          copied={copiedTaskId === selectedTask.id}
           task={selectedTask}
-          onClose={() => setSelectedTask(undefined)}
+          onClose={() => onSelectTask(undefined)}
+          onCopyTask={copyTaskHandoff}
         />
       ) : null}
     </main>
@@ -125,11 +191,18 @@ export function TasksPage() {
 }
 
 interface TaskDetailsModalProps {
+  copied: boolean;
   task: TaskSummary;
   onClose: () => void;
+  onCopyTask: (task: TaskSummary) => void;
 }
 
-function TaskDetailsModal({ task, onClose }: TaskDetailsModalProps) {
+function TaskDetailsModal({
+  copied,
+  task,
+  onClose,
+  onCopyTask,
+}: TaskDetailsModalProps) {
   const [detail, setDetail] = useState<TaskDetail>();
   const [activeDocKind, setActiveDocKind] = useState<TaskDoc["kind"]>();
   const [loading, setLoading] = useState(true);
@@ -171,13 +244,26 @@ function TaskDetailsModal({ task, onClose }: TaskDetailsModalProps) {
               <span>{task.assignee ?? text.none}</span>
             </div>
           </div>
-          <button
-            aria-label={text.closeTaskDetails}
-            type="button"
-            onClick={onClose}
-          >
-            {text.closeTaskDetails}
-          </button>
+          <div className="task-modal__actions">
+            {canCopyTaskHandoff(task) ? (
+              <button
+                aria-label={`${text.copyTaskHandoff}: ${task.title}`}
+                aria-pressed={copied}
+                className="task-copy-button"
+                type="button"
+                onClick={() => onCopyTask(task)}
+              >
+                {copied ? text.copiedTaskHandoff : text.copyTaskHandoff}
+              </button>
+            ) : null}
+            <button
+              aria-label={text.closeTaskDetails}
+              type="button"
+              onClick={onClose}
+            >
+              {text.closeTaskDetails}
+            </button>
+          </div>
         </header>
 
         <div className="task-modal__body">
@@ -256,6 +342,32 @@ function TaskMeta({ label, value }: TaskMetaProps) {
 
 function docLabel(kind: TaskDoc["kind"]): string {
   return text.taskDocLabels[kind];
+}
+
+function canCopyTaskHandoff(task: TaskSummary): boolean {
+  return task.status !== "completed";
+}
+
+function buildTaskHandoffPrompt(
+  task: TaskSummary,
+  projectRoot: string | undefined,
+): string {
+  const taskDirectory = task.path.startsWith(".trellis/")
+    ? task.path
+    : `.trellis/${task.path}`;
+  const lines = projectRoot ? [`cd ${quoteShellArg(projectRoot)}`] : [];
+
+  lines.push(
+    `./.trellis/scripts/task.py start ${quoteShellArg(taskDirectory)}`,
+  );
+  lines.push("");
+  lines.push("/trellis:continue");
+
+  return lines.join("\n");
+}
+
+function quoteShellArg(value: string): string {
+  return `"${value.replace(/(["\\$`])/g, "\\$1")}"`;
 }
 
 function groupTasks(tasks: TaskSummary[]): [string, TaskSummary[]][] {

@@ -2,13 +2,16 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { DocTree } from "../components/DocTree";
 import { MarkdownViewer } from "../components/MarkdownViewer";
 import { text } from "../i18n/en";
+import type { NavigateOptions } from "../lib/route";
 import type { SearchMatch, SpecDoc, SpecTreeNode } from "../lib/api";
 import { fetchSpecDoc, fetchSpecTree, searchSpecs } from "../lib/api";
 
-const ACTIVE_CATEGORY_KEY = "trellis-dashboard.docs.activeCategory";
-const SELECTED_DOC_KEY = "trellis-dashboard.docs.selectedDoc";
+interface DocsPageProps {
+  selectedDocPath: string | undefined;
+  onSelectDocument: (path: string, options?: NavigateOptions) => void;
+}
 
-export function DocsPage() {
+export function DocsPage({ selectedDocPath, onSelectDocument }: DocsPageProps) {
   const [tree, setTree] = useState<SpecTreeNode[]>([]);
   const [activeCategoryPath, setActiveCategoryPath] = useState<string>();
   const [selectedPath, setSelectedPath] = useState<string>();
@@ -31,24 +34,28 @@ export function DocsPage() {
 
   useEffect(() => {
     fetchSpecTree()
-      .then((nextTree) => {
-        setTree(nextTree);
-        const storedCategory = window.localStorage.getItem(ACTIVE_CATEGORY_KEY);
-        const storedDoc = window.localStorage.getItem(SELECTED_DOC_KEY);
-        const activeCategory =
-          findCategory(nextTree, storedCategory) ?? nextTree[0];
-        const firstDoc =
-          findDoc(nextTree, storedDoc) ??
-          findFirstDoc(activeCategory ? [activeCategory] : nextTree) ??
-          findFirstDoc(nextTree, "spec/guides/index.md") ??
-          findFirstDoc(nextTree);
-
-        setActiveCategoryPath(activeCategory?.path);
-        setSelectedPath(firstDoc);
-      })
+      .then(setTree)
       .catch((nextError: Error) => setError(nextError.message))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (tree.length === 0) {
+      return;
+    }
+
+    const fallbackPath =
+      findFirstDoc(tree, "spec/guides/index.md") ?? findFirstDoc(tree);
+    const nextSelectedPath = findDoc(tree, selectedDocPath) ?? fallbackPath;
+    const nextCategory = findCategoryForDoc(tree, nextSelectedPath);
+
+    setActiveCategoryPath(nextCategory?.path);
+    setSelectedPath(nextSelectedPath);
+
+    if (nextSelectedPath && nextSelectedPath !== selectedDocPath) {
+      onSelectDocument(nextSelectedPath, { replace: true });
+    }
+  }, [onSelectDocument, selectedDocPath, tree]);
 
   useEffect(() => {
     if (!selectedPath) {
@@ -62,7 +69,6 @@ export function DocsPage() {
         documentPanelRef.current?.scrollTo({ top: 0 });
       })
       .catch((nextError: Error) => setError(nextError.message));
-    window.localStorage.setItem(SELECTED_DOC_KEY, selectedPath);
   }, [selectedPath]);
 
   useEffect(() => {
@@ -103,12 +109,6 @@ export function DocsPage() {
   }, [activeHeadingSlug]);
 
   useEffect(() => {
-    if (activeCategoryPath) {
-      window.localStorage.setItem(ACTIVE_CATEGORY_KEY, activeCategoryPath);
-    }
-  }, [activeCategoryPath]);
-
-  useEffect(() => {
     const handle = window.setTimeout(() => {
       if (!query.trim()) {
         setMatches([]);
@@ -127,7 +127,10 @@ export function DocsPage() {
     setActiveCategoryPath(category.path);
 
     if (!category.children.some((child) => child.path === selectedPath)) {
-      setSelectedPath(category.children[0]?.path);
+      const nextPath = category.children[0]?.path;
+      if (nextPath) {
+        onSelectDocument(nextPath);
+      }
     }
   }
 
@@ -138,7 +141,7 @@ export function DocsPage() {
     if (category) {
       setActiveCategoryPath(category.path);
     }
-    setSelectedPath(path);
+    onSelectDocument(path);
   }
 
   return (
@@ -255,6 +258,15 @@ function findDoc(tree: SpecTreeNode[], docPath: string | null | undefined) {
   return tree
     .flatMap((node) => node.children)
     .find((doc) => doc.path === docPath)?.path;
+}
+
+function findCategoryForDoc(
+  tree: SpecTreeNode[],
+  docPath: string | undefined,
+): SpecTreeNode | undefined {
+  return tree.find((node) =>
+    node.children.some((child) => child.path === docPath),
+  );
 }
 
 function findFirstDoc(

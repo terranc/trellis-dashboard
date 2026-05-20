@@ -118,6 +118,7 @@ input {
   display: block;
   font-size: 1rem;
   margin-top: 2px;
+  overflow-wrap: anywhere;
 }
 
 .docs-layout {
@@ -327,6 +328,24 @@ input {
   padding: 0;
 }
 
+.markdown-viewer blockquote {
+  background: #f7f0e4;
+  border-left: 4px solid #9b6b50;
+  border-radius: 0 6px 6px 0;
+  box-shadow: inset 0 0 0 1px rgba(155, 107, 80, 0.12);
+  color: #34414a;
+  margin: 16px 0;
+  padding: 10px 14px 10px 16px;
+}
+
+.markdown-viewer blockquote > :first-child {
+  margin-top: 0;
+}
+
+.markdown-viewer blockquote > :last-child {
+  margin-bottom: 0;
+}
+
 .inline-link {
   background: none;
   border: 0;
@@ -467,6 +486,7 @@ input {
   display: grid;
   gap: 10px;
   min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   padding-right: 6px;
   scrollbar-color: #b8ab98 transparent;
@@ -492,7 +512,9 @@ input {
   border: 1px solid #ddd4c5;
   border-radius: 8px;
   cursor: pointer;
+  min-width: 0;
   padding: 14px;
+  position: relative;
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease,
@@ -517,6 +539,8 @@ input {
 
 .task-card__topline {
   justify-content: space-between;
+  min-width: 0;
+  padding-right: 58px;
 }
 
 .task-card__topline span,
@@ -532,6 +556,7 @@ input {
 
 .task-card__topline small {
   color: #65727b;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -542,6 +567,7 @@ input {
   font-size: 0.98rem;
   line-height: 1.25;
   margin: 10px 0 0;
+  overflow-wrap: anywhere;
 }
 
 .task-card p {
@@ -551,6 +577,7 @@ input {
   line-height: 1.45;
   margin: 8px 0 0;
   overflow: hidden;
+  overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
 }
@@ -594,6 +621,52 @@ input {
   font-size: 0.76rem;
   font-weight: 800;
   margin-right: 2px;
+}
+
+.task-copy-button {
+  background: #f6f3ed;
+  border: 1px solid #d6cdbc;
+  border-radius: 6px;
+  color: #25313a;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 7px 9px;
+}
+
+.task-copy-button:hover,
+.task-copy-button:focus-visible {
+  background: #e7efe0;
+  border-color: #a7b77f;
+  outline: 0;
+}
+
+.task-copy-button[aria-pressed="true"] {
+  background: #20303a;
+  border-color: #20303a;
+  color: #fffdf8;
+}
+
+.task-card__copy {
+  max-width: calc(100% - 20px);
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  transform: translateY(-2px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.task-card:hover .task-card__copy,
+.task-card:focus-within .task-card__copy {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 .task-modal {
@@ -652,6 +725,32 @@ input {
   cursor: pointer;
   flex: 0 0 auto;
   padding: 7px 10px;
+}
+
+.task-modal__actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.task-modal__actions .task-copy-button {
+  background: #f6f3ed;
+  border-color: #d6cdbc;
+  color: #25313a;
+}
+
+.task-modal__actions .task-copy-button:hover,
+.task-modal__actions .task-copy-button:focus-visible {
+  background: #e7efe0;
+  border-color: #a7b77f;
+}
+
+.task-modal__actions .task-copy-button[aria-pressed="true"] {
+  background: #20303a;
+  border-color: #20303a;
+  color: #fffdf8;
 }
 
 .task-modal__chips {
@@ -772,10 +871,156 @@ input {
   margin-top: 0;
 }
 
+.workspace-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.workspace-sidebar {
+  background: #ede8dd;
+  border-right: 1px solid #d6cdbc;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  overflow: hidden;
+  padding: 18px;
+}
+
+.workspace-panel__header {
+  align-items: end;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.workspace-panel__header p {
+  color: #8a5a44;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}
+
+.workspace-panel__header h2 {
+  color: #25313a;
+  font-size: 1rem;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.workspace-panel__header strong {
+  color: #8a5a44;
+  font-size: 1.4rem;
+}
+
+.workspace-developer-list,
+.workspace-session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.workspace-developer,
+.workspace-session {
+  background: #f8f5ee;
+  border: 1px solid #d6cdbc;
+  border-radius: 8px;
+  color: #25313a;
+  cursor: pointer;
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  text-align: left;
+}
+
+.workspace-developer[aria-current="page"],
+.workspace-session[aria-current="page"] {
+  background: #fffdf8;
+  border-color: #9b6b50;
+  box-shadow: inset 3px 0 0 #9b6b50;
+}
+
+.workspace-developer span,
+.workspace-session span {
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workspace-developer small,
+.workspace-session small {
+  color: #596773;
+}
+
+.workspace-content {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+  padding: 22px 28px 48px;
+}
+
+.workspace-timeline,
+.workspace-session-detail {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.workspace-timeline {
+  border-right: 1px solid #d6cdbc;
+  padding-right: 18px;
+}
+
+.workspace-timeline header {
+  margin-bottom: 14px;
+}
+
+.workspace-timeline h2 {
+  color: #25313a;
+  font-size: 1rem;
+  margin: 0 0 4px;
+}
+
+.workspace-timeline header span {
+  color: #596773;
+  font-size: 0.86rem;
+}
+
+.workspace-session-detail {
+  padding-right: 4px;
+}
+
+.workspace-session-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.workspace-session-meta span {
+  background: #ede8dd;
+  border: 1px solid #d6cdbc;
+  border-radius: 999px;
+  color: #34414a;
+  font-size: 0.82rem;
+  padding: 5px 9px;
+}
+
 @media (max-width: 900px) {
   .app-header,
   .docs-layout,
-  .document-grid {
+  .document-grid,
+  .workspace-layout,
+  .workspace-content {
     display: block;
   }
 
@@ -812,8 +1057,27 @@ input {
     overflow: visible;
   }
 
+  .workspace-sidebar {
+    border-bottom: 1px solid #d6cdbc;
+    border-right: 0;
+    overflow: visible;
+  }
+
   .document-panel {
     overflow: visible;
+  }
+
+  .workspace-content {
+    overflow: visible;
+    padding: 18px;
+  }
+
+  .workspace-timeline {
+    border-bottom: 1px solid #d6cdbc;
+    border-right: 0;
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    padding-right: 0;
   }
 
   .doc-tree {

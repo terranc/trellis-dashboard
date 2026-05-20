@@ -38,3 +38,6 @@ npm-debug.log*
 .claude/
 .codex/
 .opencode/
+
+# Trellis — keep config, scripts, spec, tasks; ignore personal/runtime
+.trellis/workspace/

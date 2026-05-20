@@ -47,6 +47,18 @@ export function listTasks(project: TrellisProject): TaskSummary[] {
     .sort(compareTasks);
 }
 
+export function readCurrentTask(project: TrellisProject): TaskSummary | null {
+  const taskRef = readCurrentTaskRef(project);
+  const taskId = taskRef ? taskIdFromRef(project, taskRef) : undefined;
+  if (!taskId) {
+    return null;
+  }
+
+  return (
+    readTaskSummary(path.join(project.trellisDir, "tasks"), taskId) ?? null
+  );
+}
+
 export function readTaskDetail(
   project: TrellisProject,
   taskId: string,
@@ -139,6 +151,75 @@ function readStringArray(value: unknown): string[] {
   return Array.isArray(value)
     ? value.filter((item): item is string => typeof item === "string")
     : [];
+}
+
+function readCurrentTaskRef(project: TrellisProject): string | undefined {
+  const legacyTaskFile = path.join(project.trellisDir, ".current-task");
+  if (existsSync(legacyTaskFile)) {
+    return readFileSync(legacyTaskFile, "utf8").trim() || undefined;
+  }
+
+  const sessionsRoot = path.join(project.trellisDir, ".runtime", "sessions");
+  if (!existsSync(sessionsRoot)) {
+    return undefined;
+  }
+
+  const taskRefs = readdirSync(sessionsRoot, { withFileTypes: true }).flatMap(
+    (entry) => {
+      if (!entry.isFile() || !entry.name.endsWith(".json")) {
+        return [];
+      }
+
+      const sessionData = readJsonObject(path.join(sessionsRoot, entry.name));
+      const currentTask = sessionData
+        ? readString(sessionData.current_task)
+        : undefined;
+      return currentTask ? [currentTask] : [];
+    },
+  );
+
+  return taskRefs.length === 1 ? taskRefs[0] : undefined;
+}
+
+function taskIdFromRef(
+  project: TrellisProject,
+  taskRef: string,
+): string | undefined {
+  const normalizedRef = taskRef.replace(/\\/g, "/").replace(/^\.\//, "");
+  const taskId = taskIdFromRelativeRef(normalizedRef);
+  if (taskId) {
+    return taskId;
+  }
+
+  if (!path.isAbsolute(taskRef)) {
+    return undefined;
+  }
+
+  const relativePath = path.relative(
+    path.join(project.trellisDir, "tasks"),
+    taskRef,
+  );
+  if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
+    return undefined;
+  }
+
+  return taskIdFromRelativeRef(`tasks/${relativePath.replace(/\\/g, "/")}`);
+}
+
+function taskIdFromRelativeRef(taskRef: string): string | undefined {
+  const match = taskRef.match(/^(?:\.trellis\/)?tasks\/([^/]+)$/);
+  return match?.[1];
+}
+
+function readJsonObject(filePath: string): Record<string, unknown> | undefined {
+  try {
+    const parsed = JSON.parse(readFileSync(filePath, "utf8")) as unknown;
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as Record<string, unknown>)
+      : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 function readTaskDocs(taskDir: string, taskId: string): TaskDoc[] {

@@ -56,6 +56,30 @@ export interface TaskDetail extends TaskSummary {
   docs: TaskDoc[];
 }
 
+export interface WorkspaceDeveloperSummary {
+  id: string;
+  name: string;
+  totalSessions: number;
+  lastActive: string | null;
+  activeFile: string | null;
+}
+
+export interface WorkspaceSession {
+  id: string;
+  number: number | null;
+  title: string;
+  date: string | null;
+  task: string | null;
+  branch: string | null;
+  journalFile: string;
+  markdown: string;
+}
+
+export interface WorkspaceDeveloperDetail {
+  developer: WorkspaceDeveloperSummary;
+  sessions: WorkspaceSession[];
+}
+
 export interface AppConfig {
   project: {
     name: string;
@@ -65,12 +89,14 @@ export interface AppConfig {
     specDocs: number;
     tasks: number;
   };
+  currentTask: TaskSummary | null;
 }
 
 export async function fetchConfig(): Promise<AppConfig> {
   return getJson<{
     project: AppConfig["project"];
     counts: AppConfig["counts"];
+    currentTask: AppConfig["currentTask"];
   }>("/api/config");
 }
 
@@ -104,6 +130,23 @@ export async function fetchTaskDetail(taskId: string): Promise<TaskDetail> {
     `/api/tasks/${encodeURIComponent(taskId)}`,
   );
   return response.task;
+}
+
+export async function fetchWorkspaceDevelopers(): Promise<
+  WorkspaceDeveloperSummary[]
+> {
+  const response = await getJson<{
+    developers: WorkspaceDeveloperSummary[];
+  }>("/api/workspace");
+  return response.developers;
+}
+
+export async function fetchWorkspaceDeveloper(
+  developerId: string,
+): Promise<WorkspaceDeveloperDetail> {
+  return getJson<WorkspaceDeveloperDetail>(
+    `/api/workspace/${encodeURIComponent(developerId)}`,
+  );
 }
 
 async function getJson<T>(url: string): Promise<T> {

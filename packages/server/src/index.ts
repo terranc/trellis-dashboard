@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { configRouter } from "./api/config.js";
 import { specsRouter } from "./api/specs.js";
 import { tasksRouter } from "./api/tasks.js";
+import { workspaceRouter } from "./api/workspace.js";
 import type { TrellisProject } from "./lib/trellis.js";
 
 export interface CreateAppOptions {
@@ -22,6 +23,7 @@ export function createApp({
   app.use("/api/config", configRouter(project));
   app.use("/api/specs", specsRouter(project));
   app.use("/api/tasks", tasksRouter(project));
+  app.use("/api/workspace", workspaceRouter(project));
 
   if (existsSync(webDistPath)) {
     app.use(express.static(webDistPath));
