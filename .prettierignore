@@ -1,0 +1,10 @@
+node_modules
+dist
+packages/*/dist
+.trellis
+.agents
+.claude
+.codex
+.opencode
+docs
+AGENTS.md
