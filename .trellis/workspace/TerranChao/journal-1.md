@@ -170,3 +170,36 @@ Implemented and committed the workspace feature, including read-only server APIs
 ### Next Steps
 
 - None - task complete
+
+
+## Session 6: Route-backed browsing state restore
+
+**Date**: 2026-05-21
+**Task**: Route-backed browsing state restore
+**Branch**: `master`
+
+### Summary
+
+Implemented route-backed dashboard state for docs selection, task view, and task detail modals with refresh/back-forward recovery.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `25658c6` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

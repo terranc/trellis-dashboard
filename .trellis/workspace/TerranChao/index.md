@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 5
+- **Total Sessions**: 6
 - **Last Active**: 2026-05-21
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~172 | Active |
+| `journal-1.md` | ~205 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 6 | 2026-05-21 | Route-backed browsing state restore | `25658c6` | `master` |
 | 5 | 2026-05-21 | Workspace feature wrap-up | `25658c6` | `master` |
 | 4 | 2026-05-21 | Workspace and task handoff UI | `25658c6` | `master` |
 | 3 | 2026-05-21 | Read-only Workspace dashboard | `25658c6` | `master` |
