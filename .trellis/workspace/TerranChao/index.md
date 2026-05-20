@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 1
+- **Total Sessions**: 5
 - **Last Active**: 2026-05-21
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~40 | Active |
+| `journal-1.md` | ~172 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,10 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 5 | 2026-05-21 | Workspace feature wrap-up | `25658c6` | `master` |
+| 4 | 2026-05-21 | Workspace and task handoff UI | `25658c6` | `master` |
+| 3 | 2026-05-21 | Read-only Workspace dashboard | `25658c6` | `master` |
+| 2 | 2026-05-21 | Dashboard active task summary | `25658c6` | `master` |
 | 1 | 2026-05-21 | Trellis Dashboard task panel polish | `cf61049` | `master` |
 <!-- @@@/auto:session-history -->
 
