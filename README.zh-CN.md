@@ -14,12 +14,15 @@
 ## 快速开始
 
 ```bash
-# 安装依赖
-npm install
+# 直接运行（无需安装）
+npx @terranc/trellis-dashboard
+```
 
-# 构建并启动
-npm run build
-node bin/trellis-dashboard.js
+或全局安装：
+
+```bash
+npm install -g @terranc/trellis-dashboard
+trellis-dashboard
 ```
 
 Dashboard 默认在 `http://localhost:3777` 打开（端口被占用时自动递增）。
@@ -27,9 +30,9 @@ Dashboard 默认在 `http://localhost:3777` 打开（端口被占用时自动递
 ### CLI 选项
 
 ```bash
-node bin/trellis-dashboard.js              # 默认端口 3777
-node bin/trellis-dashboard.js --port 8080  # 自定义端口
-node bin/trellis-dashboard.js --no-open    # 不自动打开浏览器
+trellis-dashboard              # 默认端口 3777
+trellis-dashboard --port 8080  # 自定义端口
+trellis-dashboard --no-open    # 不自动打开浏览器
 ```
 
 ## 项目结构

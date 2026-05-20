@@ -14,12 +14,15 @@
 ## Quick Start
 
 ```bash
-# Install dependencies
-npm install
+# Run directly (no install needed)
+npx @terranc/trellis-dashboard
+```
 
-# Build and launch
-npm run build
-node bin/trellis-dashboard.js
+Or install globally:
+
+```bash
+npm install -g @terranc/trellis-dashboard
+trellis-dashboard
 ```
 
 The dashboard opens at `http://localhost:3777` (auto-increments if the port is taken).
@@ -27,9 +30,9 @@ The dashboard opens at `http://localhost:3777` (auto-increments if the port is t
 ### CLI Options
 
 ```bash
-node bin/trellis-dashboard.js              # default port 3777
-node bin/trellis-dashboard.js --port 8080  # custom port
-node bin/trellis-dashboard.js --no-open    # don't auto-open browser
+trellis-dashboard              # default port 3777
+trellis-dashboard --port 8080  # custom port
+trellis-dashboard --no-open    # don't auto-open browser
 ```
 
 ## Project Structure

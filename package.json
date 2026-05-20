@@ -1,10 +1,17 @@
 {
-  "name": "trellis-dashboard",
+  "name": "@terranc/trellis-dashboard",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "bin": {
     "trellis-dashboard": "bin/trellis-dashboard.js"
+  },
+  "files": [
+    "bin/",
+    "packages/server/dist/",
+    "packages/web/dist/"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "workspaces": [
     "packages/server",
@@ -23,5 +30,8 @@
     "eslint": "^8.57.1",
     "prettier": "^3.3.3",
     "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
   }
 }
