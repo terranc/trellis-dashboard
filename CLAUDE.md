@@ -69,3 +69,7 @@ packages/
 - **Port fallback** — CLI tries up to 20 ports starting from target (default 3777)
 - **`.trellis/` dependency** — Server expects a `.trellis/` directory in the working directory; CLI validates this at startup
 - **Dual README** — `README.md` (English, default) + `README.zh-CN.md` (Chinese). Both must be updated together on user-facing changes
+
+## Version Release Preference
+<!-- github-push-and-release: release -->
+This project uses full release mode: CHANGELOG + commit + git tag + GitHub release.
