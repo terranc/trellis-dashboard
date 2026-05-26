@@ -540,7 +540,6 @@ input {
 .task-card__topline {
   justify-content: space-between;
   min-width: 0;
-  padding-right: 58px;
 }
 
 .task-card__topline span,
@@ -649,24 +648,30 @@ input {
 }
 
 .task-card__copy {
-  max-width: calc(100% - 20px);
   opacity: 0;
   pointer-events: none;
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  transform: translateY(-2px);
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
   white-space: nowrap;
 }
 
-.task-card:hover .task-card__copy,
-.task-card:focus-within .task-card__copy {
+.task-card .task-copy-menu {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  opacity: 0;
+  pointer-events: none;
+  background: #fffdf8;
+  padding-left: 0.4em;
+}
+
+.task-card:hover .task-copy-menu,
+.task-card:focus-within .task-copy-menu {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0);
+}
+
+.task-card .task-copy-menu .task-card__copy {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .task-modal {
@@ -735,22 +740,91 @@ input {
   justify-content: flex-end;
 }
 
-.task-modal__actions .task-copy-button {
+.task-modal__actions button {
   background: #f6f3ed;
-  border-color: #d6cdbc;
+  border: 1px solid #d6cdbc;
+  border-radius: 6px;
   color: #25313a;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 8px 14px;
+  white-space: nowrap;
 }
 
-.task-modal__actions .task-copy-button:hover,
-.task-modal__actions .task-copy-button:focus-visible {
+.task-modal__actions button:hover,
+.task-modal__actions button:focus-visible {
   background: #e7efe0;
   border-color: #a7b77f;
+  outline: 0;
+}
+
+.task-modal__actions .task-copy-button {
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.5;
+  padding: 8px 14px;
 }
 
 .task-modal__actions .task-copy-button[aria-pressed="true"] {
   background: #20303a;
   border-color: #20303a;
   color: #fffdf8;
+}
+
+.task-copy-menu {
+  position: relative;
+}
+
+.task-copy-menu__dropdown {
+  background: #fffdf8;
+  border: 1px solid #d6cdbc;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(32, 48, 58, 0.15);
+  list-style: none;
+  margin: 0;
+  margin-top: 4px;
+  min-width: 140px;
+  padding: 4px 0;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 10;
+}
+
+.task-copy-menu__dropdown li {
+  margin: 0;
+}
+
+.task-copy-menu__dropdown button {
+  background: transparent;
+  border: 0;
+  color: #25313a;
+  cursor: pointer;
+  display: block;
+  font-size: 0.78rem;
+  padding: 6px 12px;
+  text-align: left;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.task-copy-menu__dropdown button:hover {
+  background: #e7efe0;
+}
+
+.task-copy-menu__dropdown button:focus-visible {
+  background: #e7efe0;
+  outline: 0;
+}
+
+.task-modal__actions .task-copy-menu {
+  display: inline-block;
+}
+
+.task-modal__actions .task-copy-menu__dropdown {
+  right: auto;
+  left: 0;
 }
 
 .task-modal__chips {

@@ -127,11 +127,7 @@ export function App() {
         />
       ) : null}
       {route.view === "tasks" ? (
-        <TasksPage
-          projectRoot={config?.project.root}
-          selectedTaskId={route.taskId}
-          onSelectTask={selectTask}
-        />
+        <TasksPage selectedTaskId={route.taskId} onSelectTask={selectTask} />
       ) : null}
       {route.view === "workspace" ? (
         <WorkspacePage
