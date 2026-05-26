@@ -14,8 +14,8 @@
 ## Quick Start
 
 ```bash
-# Run directly (no install needed)
-npx @terranc/trellis-dashboard
+# Run directly (no install needed) — always use @latest to get updates
+npx @terranc/trellis-dashboard@latest
 ```
 
 Or install globally:
@@ -24,6 +24,8 @@ Or install globally:
 npm install -g @terranc/trellis-dashboard
 trellis-dashboard
 ```
+
+> **Note:** Using `@latest` ensures you always get the most recent version. Without it, npx may use a cached version.
 
 The dashboard opens at `http://localhost:3777` (auto-increments if the port is taken).
 

@@ -203,3 +203,37 @@ Implemented route-backed dashboard state for docs selection, task view, and task
 ### Next Steps
 
 - None - task complete
+
+
+## Session 7: Add task copy menu with multiple options
+
+**Date**: 2026-05-26
+**Task**: Add task copy menu with multiple options
+**Branch**: `master`
+
+### Summary
+
+Added copy dropdown menu to task cards and detail modal with three options: copy task ID, copy continue prompt (/trellis:continue <task-id>), copy finish prompt (/trellis:finish-work <task-id>). Released v0.1.1.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `df6f625` | (see git log) |
+| `75b5a9b` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

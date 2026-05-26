@@ -14,8 +14,8 @@
 ## 快速开始
 
 ```bash
-# 直接运行（无需安装）
-npx @terranc/trellis-dashboard
+# 直接运行（无需安装）— 使用 @latest 确保获取最新版本
+npx @terranc/trellis-dashboard@latest
 ```
 
 或全局安装：
@@ -24,6 +24,8 @@ npx @terranc/trellis-dashboard
 npm install -g @terranc/trellis-dashboard
 trellis-dashboard
 ```
+
+> **注意：** 使用 `@latest` 可确保每次都获取最新版本。不加此标签时，npx 可能使用缓存版本。
 
 Dashboard 默认在 `http://localhost:3777` 打开（端口被占用时自动递增）。
 
