@@ -237,3 +237,36 @@ Added copy dropdown menu to task cards and detail modal with three options: copy
 ### Next Steps
 
 - None - task complete
+
+
+## Session 8: Fix task board column order
+
+**Date**: 2026-05-28
+**Task**: Fix task board column order
+**Branch**: `master`
+
+### Summary
+
+Swapped STATUS_ORDER so Planning appears to the left of In progress on the task board.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `357487a` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

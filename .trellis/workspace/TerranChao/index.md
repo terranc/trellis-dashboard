@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 7
-- **Last Active**: 2026-05-26
+- **Total Sessions**: 8
+- **Last Active**: 2026-05-28
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~239 | Active |
+| `journal-1.md` | ~272 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 8 | 2026-05-28 | Fix task board column order | `357487a` | `master` |
 | 7 | 2026-05-26 | Add task copy menu with multiple options | `df6f625`, `75b5a9b` | `master` |
 | 6 | 2026-05-21 | Route-backed browsing state restore | `25658c6` | `master` |
 | 5 | 2026-05-21 | Workspace feature wrap-up | `25658c6` | `master` |
