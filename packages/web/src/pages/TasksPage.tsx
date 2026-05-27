@@ -6,7 +6,7 @@ import type { TaskDetail, TaskDoc, TaskSummary } from "../lib/api";
 import { fetchTaskDetail, fetchTasks } from "../lib/api";
 import type { NavigateOptions } from "../lib/route";
 
-const STATUS_ORDER = ["in_progress", "planning", "review", "completed"];
+const STATUS_ORDER = ["planning", "in_progress", "review", "completed"];
 
 type CopyAction = "id" | "continue" | "finish";
 
