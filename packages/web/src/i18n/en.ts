@@ -70,8 +70,8 @@ export const text = {
     implement: "Plan",
   },
   taskStatusLabels: {
-    in_progress: "In progress",
     planning: "Planning",
+    in_progress: "In progress",
     review: "Review",
     completed: "Completed",
     unknown: "Unknown",
