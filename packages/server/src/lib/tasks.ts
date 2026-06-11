@@ -130,8 +130,8 @@ function compareTasks(a: TaskSummary, b: TaskSummary): number {
 
 function statusOrder(status: string): number {
   const order: Record<string, number> = {
-    in_progress: 0,
-    planning: 1,
+    planning: 0,
+    in_progress: 1,
     review: 2,
     completed: 3,
   };
